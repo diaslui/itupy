@@ -2,15 +2,18 @@
   "name": "oyd",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
+    "dev": "node --watch src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
