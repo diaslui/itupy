@@ -11,7 +11,7 @@ process.loadEnvFile(path.join(__rootdir, '.env'));
 const app = express();
 app.use("/assets", express.static(path.join(__rootdir, "public")));
 app.set("view engine", "ejs");
-app.set("views", path.join(__rootdir, "src", "views"));
+app.set("views", path.join(__rootdir, "views"));
 
 const PORT = process.env.PORT || 3000;
 

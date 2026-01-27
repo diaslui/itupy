@@ -2,7 +2,7 @@ import { Router } from 'express';
 const routes = Router();
 
 routes.get('/', (req, res) => {
-  res.send('Hello, world!');
+  res.render('index');
 });
 
 export default routes;
