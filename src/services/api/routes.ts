@@ -1,5 +1,7 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { spawn } from "child_process";
+import { createJob } from "./storage.ts";
 
 const routes = Router();
 
@@ -100,6 +102,61 @@ routes.post("/inspect", async (req, res) => {
       console.error(data.toString());
     });
   }
+});
+
+routes.post("/download/create", async (req: Request, res: Response) => {
+  const { urls, outputType, outputFormat } = req.body;
+
+  if (!Array.isArray(urls) || urls.length === 0) {
+    return res.status(400).json({ error: "urls must be a non-empty array" });
+  }
+
+  const jobId =
+    Math.random().toString(36).substring(2, 10) +
+    Date.now().toString(36).substring(4, 10);
+
+  createJob({
+    id: jobId,
+    urls,
+    outputType,
+    outputFormat,
+    status: "idle",
+    progress: 0,
+  });
+
+  res.json({
+    jobId,
+    sseUrl: `/api/download/sse/${jobId}`,
+    streamUrl: `/api/download/stream/${jobId}`,
+    message: "Download job created",
+  });
+});
+
+routes.get("/download/sse/:jobId", (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  //        res.write(`data: ${JSON.stringify({ progress: counter * 10, status: `Downloading... ${counter * 10}%` })}\n\n`);
+
+  req.on("message", (msg) => {
+    const data = JSON.parse(msg);
+    if (
+      !data ||
+      !data.type ||
+      !data.payload ||
+      data.type != "create-download"
+    ) {
+      res.end();
+      return;
+    }
+
+    console.log("Received message from client:", data);
+  });
+
+  req.on("close", () => {
+    res.end();
+  });
 });
 
 export default routes;

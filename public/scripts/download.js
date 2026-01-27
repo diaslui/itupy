@@ -232,6 +232,10 @@ const switchMultiFormat = (format) => {
   }
 };
 
+const redirect = (url) => {
+  window.location.href = url;
+};
+
 const startDownload = async () => {
   const downloadConfig = {
     mode: downloadData.mode,
@@ -240,9 +244,24 @@ const startDownload = async () => {
     videos: downloadData.videos,
   };
 
-  console.log("starting download:", downloadConfig);
+  showLoader("Criando solicitação de download...");
+  const response = await fetch("/api/download/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      urls: downloadData.videos.map((v) => v.url),
+      outputType: "video",
+      outputFormat: selectedFormat,
+    }),
+  });
 
-  await showLoader("Preparando download...");
+  const data = await response.json();
+  showLoader("Redirecionando para a página de download...");
+  showToast("Você será redirecionado para a página de download.");
+
+  redirect(`/download/job/${data.jobId}`);
 };
 
 const include1fListeners = async () => {
