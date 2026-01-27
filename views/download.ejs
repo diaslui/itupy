@@ -1,0 +1,133 @@
+<div id="1-f" class="hidden max-w-5xl mx-auto px-4 py-6">
+
+    <div class="mb-6">
+        <div class="flex items-center gap-3 mb-2">
+            <a href="/" class="p-2 hover:bg-itp-gray-100 dark:hover:bg-itp-gray-700 rounded-full transition-colors">
+                <svg class="w-5 h-5 text-itp-gray-600 dark:text-itp-gray-300" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+            <h1 class="text-2xl font-semibold text-itp-gray-900 dark:text-white">Configurar Download</h1>
+        </div>
+        <p class="text-sm text-itp-gray-500 dark:text-itp-gray-400 ml-14">
+            Escolha o formato e qualidade do donwload desejado.
+        </p>
+    </div>
+
+    <div id="downloadContainer">
+
+        <div id="multiMode" class="hidden">
+            <div
+                class="bg-itp-gray-50 dark:bg-itp-gray-800 rounded-xl p-6 mb-6 border border-itp-gray-200 dark:border-itp-gray-700">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="text-lg font-medium text-itp-gray-900 dark:text-white mb-1">Download Múltiplo</h2>
+                        <p class="text-sm text-itp-gray-500 dark:text-itp-gray-400">
+                            <span id="multiVideoCount">0</span> vídeos serão baixados na melhor qualidade disponível
+                        </p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-itp-gray-500 dark:text-itp-gray-400 mb-1">Tamanho total do ZIP</p>
+                        <p id="multiTotalSize" class="text-xl font-semibold text-itp-gray-900 dark:text-white">0 MB</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="multiFormatMp4"
+                        class="flex-1 py-3 px-4 bg-itp-red text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Vídeo (MP4)
+                    </button>
+                    <button id="multiFormatMp3"
+                        class="flex-1 py-3 px-4 bg-itp-gray-100 dark:bg-itp-gray-700 text-itp-gray-900 dark:text-white rounded-lg font-medium hover:bg-itp-gray-200 dark:hover:bg-itp-gray-600 transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        </svg>
+                        Áudio (MP3)
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <h3 class="text-sm font-medium text-itp-gray-700 dark:text-itp-gray-300 mb-3">Vídeos incluídos</h3>
+                <div id="multiVideoList" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <div id="singleMode" class="hidden">
+            <div id="singleVideoCard"
+                class="bg-itp-gray-50 dark:bg-itp-gray-800 rounded-xl overflow-hidden mb-6 border border-itp-gray-200 dark:border-itp-gray-700">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-80 h-48 md:h-auto bg-itp-gray-200 dark:bg-itp-gray-700 flex-shrink-0">
+                        <img id="singleThumbnail" src="" alt="Video thumbnail" class="w-full h-full object-cover">
+                    </div>
+
+                    <div class="flex-1 p-6">
+                        <h2 id="singleTitle"
+                            class="text-lg font-medium text-itp-gray-900 dark:text-white mb-2 line-clamp-2"></h2>
+                        <div class="flex items-center gap-4 text-sm text-itp-gray-500 dark:text-itp-gray-400">
+                            <span id="singleDuration" class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                --:--
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-sm font-medium text-itp-gray-700 dark:text-itp-gray-300 mb-3">Escolha o formato</h3>
+                <div class="flex gap-3">
+                    <button id="singleFormatVideo"
+                        class="flex-1 py-3 px-4 bg-itp-red text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Vídeo
+                    </button>
+                    <button id="singleFormatAudio"
+                        class="flex-1 py-3 px-4 bg-itp-gray-100 dark:bg-itp-gray-700 text-itp-gray-900 dark:text-white rounded-lg font-medium hover:bg-itp-gray-200 dark:hover:bg-itp-gray-600 transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                        </svg>
+                        Áudio
+                    </button>
+                </div>
+            </div>
+
+            <div id="singleVideoQuality" class="mb-6">
+                <h3 class="text-sm font-medium text-itp-gray-700 dark:text-itp-gray-300 mb-3">Qualidade do vídeo</h3>
+                <div id="singleVideoQualityList" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+            </div>
+            <div id="singleAudioQuality" class="hidden mb-6">
+                <h3 class="text-sm font-medium text-itp-gray-700 dark:text-itp-gray-300 mb-3">Qualidade do áudio</h3>
+                <div id="singleAudioQualityList" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sticky z-50 bottom-4 pt-4">
+        <button id="startDownloadBtn"
+            class="w-full font-bold py-4 px-6 bg-itp-red hover:bg-red-600 text-white rounded-full transition-colors flex items-center justify-center gap-2 shadow-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Iniciar Download</span>
+        </button>
+    </div>
+
+    
+
+</div>

@@ -1,3 +1,4 @@
+
 const eRefs = {
   searchInputDesktop: "#searchInputDesktop",
   searchInputMobile: "#searchInputMobile",
@@ -5,7 +6,22 @@ const eRefs = {
   addVideoBtnMobile: "#addVideoBtnMobile",
   clearAllVideosBtn: "#clearAllVideosBtn",
   pastAndAdd: "#pastAndAdd",
-  gotoDonwload: "#gotoDonwload",
+  gotoDownload: "#gotoDownload",
+  startDownloadBtn: "#startDownloadBtn",
+  singleMode: "#singleMode",
+  multiMode: "#multiMode",
+  singleThumbnail: "#singleThumbnail",
+  singleTitle: "#singleTitle",
+  singleDuration: "#singleDuration",
+  singleVideoQualityList: "#singleVideoQualityList",
+  singleAudioQualityList: "#singleAudioQualityList",
+  singleVideoQuality: "#singleVideoQuality",
+  singleAudioQuality: "#singleAudioQuality",
+  multiTotalSize: "#multiTotalSize",
+  multiFormatMp4: "#multiFormatMp4",
+  multiFormatMp3: "#multiFormatMp3",
+  multiVideoCount: "#multiVideoCount",
+  multiVideoList: "#multiVideoList",
 };
 
 const domRefs = {};
@@ -19,6 +35,67 @@ const loadElements = async () => {
   }
 };
 let videos = new Map();
+
+const screenSteps = [{
+  stepId: "0-f",
+  onEnter: async (args=undefined) => {
+    await include0fListeners();
+  },
+  onExit: async () => {
+    await removeListeners([
+    "addVideoBtnDesktop",
+    "addVideoBtnMobile",
+    "clearAllVideosBtn",
+    "gotoDownload",
+    "pastAndAdd",
+    "searchInputDesktop",
+    "searchInputMobile",
+  ]);
+  },
+}, {
+  stepId: "1-f",
+  onEnter: (args=undefined) => {
+    include1fListeners();
+    initDownloadStep(args ? args.data : undefined);
+  },
+  onExit: () => {
+    removeListeners([
+      "startDownloadBtn",
+      "singleVideoQualityList",
+      "singleAudioQualityList",
+      "multiFormatMp4",
+      "multiFormatMp3",
+      "multiVideoList",
+    ]);
+  },
+}];
+
+const goToStep = (step, args=undefined) => {
+  screenSteps.forEach((s) => {
+    const el = document.getElementById(s.stepId);
+    if (el) {
+      if (s.stepId === step) {
+        console.log("Going to step:", step);
+        el.classList.remove("hidden");
+        s.onEnter(args);
+      } else {
+        el.classList.add("hidden");
+        s.onExit();
+      }
+    }
+  });
+};
+
+const smoothSwitchStep = async (step, args=undefined) => {
+  const currentStepEl = document.getElementById(step);
+  if (!currentStepEl) return;
+
+  currentStepEl.classList.add("opacity-0");
+  setTimeout(() => {
+    goToStep(step, args);
+    currentStepEl.classList.remove("opacity-0");
+  }, 300);
+};
 
 const extractVideoId = (url) => {
   const patterns = [
@@ -188,34 +265,7 @@ const renderVideos = () => {
                 }
               </div>
               
-              <div class="flex items-center gap-2 mt-3">
-                <button 
-                  onclick="selectFormat('${id}', 'mp4')"
-                  class="format-btn px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${!video.format || video.format === "mp4" ? "bg-itp-red text-white border-itp-red" : "bg-transparent text-itp-gray-600 dark:text-itp-gray-300 border-itp-gray-300 dark:border-itp-gray-600 hover:border-itp-gray-400"}"
-                  data-video="${id}"
-                  data-format="mp4"
-                >
-                  <span class="flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                    </svg>
-                    MP4
-                  </span>
-                </button>
-                <button 
-                  onclick="selectFormat('${id}', 'mp3')"
-                  class="format-btn px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${video.format === "mp3" ? "bg-itp-red text-white border-itp-red" : "bg-transparent text-itp-gray-600 dark:text-itp-gray-300 border-itp-gray-300 dark:border-itp-gray-600 hover:border-itp-gray-400"}"
-                  data-video="${id}"
-                  data-format="mp3"
-                >
-                  <span class="flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
-                    </svg>
-                    MP3
-                  </span>
-                </button>
-              </div>
+             
             </div>
             
             <button 
@@ -244,19 +294,44 @@ const selectFormat = (videoId, format) => {
   }
 };
 
+const inspect = async (videosUrls) => {
+  showLoader(`Processando set de ${videosUrls.length} video(s)...`);
+  const response = await fetch("/api/inspect", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ urls: videosUrls }),
+  });
+
+  if (!response.ok) {
+    showToast("Falha ao processar os videos");
+    throw new Error("Failed to inspect videos");
+  }
+
+  const data = await response.json();
+
+    smoothSwitchStep("1-f", { data }).finally(() => {
+    setTimeout(() => {
+      hideLoader();
+    }, 500);
+  });
+  console.log("Inspect data:", data);
+  return data;
+};
+
 const proceedToDownload = () => {
   if (videos.size === 0) {
     showToast("Adicione ao menos um video");
     return;
   }
 
-  const videoData = Array.from(videos.values()).map((v) => ({
-    id: v.id,
-    format: v.format || "mp4",
-  }));
+  const videoData = Array.from(videos.values()).map((v) => v.url);
 
   console.log("Proceeding to download:", videoData);
-  showToast(`Iniciando download de ${videos.size} video(s)...`);
+
+  inspect(videoData);
+  showToast(`Processando ${videos.size} video(s)...`);
 };
 
 const handlePaste = (e) => {
@@ -276,7 +351,8 @@ const handleKeyPress = (e) => {
   }
 };
 
-const initListeners = async () => {
+const include0fListeners = async () => {
+  console.log("Including listeners for 0-f step");
   if (domRefs.addVideoBtnDesktop) {
     domRefs.addVideoBtnDesktop.addEventListener("click", () =>
       addVideo("desktop"),
@@ -290,8 +366,9 @@ const initListeners = async () => {
   if (domRefs.clearAllVideosBtn) {
     domRefs.clearAllVideosBtn.addEventListener("click", clearAllVideos);
   }
-  if (domRefs.gotoDonwload) {
-    domRefs.gotoDonwload.addEventListener("click", proceedToDownload);
+  if (domRefs.gotoDownload) {
+    console.log("Adding listener to gotoDownload button");
+    domRefs.gotoDownload.addEventListener("click", proceedToDownload);
   }
 
   if (domRefs.pastAndAdd) {
@@ -328,10 +405,30 @@ const initListeners = async () => {
     }
   });
 };
+const removeListeners = async (keysToReplace) => {
+  const replaceElement = (key) => {
+    const el = domRefs[key] || document.getElementById(key);
+    if (!el || !el.parentNode) return;
+
+    const newEl = el.cloneNode(true);
+
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement) {
+      newEl.value = el.value;
+      if ("checked" in el) newEl.checked = el.checked;
+    }
+
+    el.parentNode.replaceChild(newEl, el);
+
+    const refKey = Object.keys(eRefs).find((k) => eRefs[k] === `#${newEl.id}`) || key;
+    domRefs[refKey] = newEl;
+  };
+
+  keysToReplace.forEach(replaceElement);
+};
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadElements();
-  await initListeners();
+  goToStep("0-f");
   const storedVideos = getVideosFromLocalStorage();
   storedVideos.forEach((video) => {
     videos.set(video.id, video);
