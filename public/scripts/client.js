@@ -40,6 +40,22 @@ const screenSteps = [{
   stepId: "0-f",
   onEnter: async (args=undefined) => {
     await include0fListeners();
+    window.onkeyup = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key && e.key.toLowerCase() === "v") {
+        (async () => {
+          try {
+            const text = await navigator.clipboard.readText();
+            const videoId = extractVideoId(text);
+            if (!videoId) return;
+            if (domRefs.searchInputDesktop) domRefs.searchInputDesktop.value = text;
+            if (domRefs.searchInputMobile) domRefs.searchInputMobile.value = text;
+            addVideo("desktop");
+          } catch (err) {
+            console.warn("Failed to read clipboard:", err);
+          }
+        })();
+      }
+    }
   },
   onExit: async () => {
     await removeListeners([
