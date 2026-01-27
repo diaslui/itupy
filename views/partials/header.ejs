@@ -1,0 +1,42 @@
+<header
+      class="sticky top-0 z-50 bg-itp-light dark:bg-itp-dark border-b border-itp-gray-200 dark:border-itp-gray-700">
+      <div class="flex items-center justify-between px-4 h-14">
+        <a href="/" class="flex items-center gap-1 shrink-0">
+          <span class="text-xl font-semibold text-itp-gray-900 dark:text-white tracking-tight">itupy</span>
+        </a>
+
+
+        <div class="flex items-center gap-2">
+          <button onclick="toggleTheme()"
+            class="p-2 rounded-full hover:bg-itp-gray-100 dark:hover:bg-itp-gray-700 transition-colors"
+            aria-label="Alternar tema">
+            <svg class="w-6 h-6 text-itp-gray-600 dark:text-itp-gray-300 hidden dark:block" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg class="w-6 h-6 text-itp-gray-600 dark:text-itp-gray-300 block dark:hidden" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="md:hidden px-4 pb-3">
+        <div class="flex w-full">
+          <div class="relative flex-1">
+            <input type="text" id="searchInputMobile" placeholder="Cole o link do YouTube aqui..."
+              class="w-full h-10 px-4 bg-itp-gray-50 dark:bg-itp-gray-800 border border-itp-gray-200 dark:border-itp-gray-700 rounded-l-full text-itp-gray-900 dark:text-white placeholder-itp-gray-400 focus:outline-none focus:border-blue-500 dark:focus:border-blue-500 transition-colors text-sm">
+          </div>
+          <button id="addVideoBtnMobile"
+            class="h-10 px-4 bg-itp-gray-100 dark:bg-itp-gray-700 border border-l-0 border-itp-gray-200 dark:border-itp-gray-700 rounded-r-full hover:bg-itp-gray-200 dark:hover:bg-itp-gray-600 transition-colors">
+            <svg class="w-5 h-5 text-itp-gray-500 dark:text-itp-gray-300" fill="none" stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>

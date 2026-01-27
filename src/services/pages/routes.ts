@@ -1,16 +1,23 @@
-import { Router } from 'express';
+import { Router } from "express";
+import { getJob } from "../api/storage.ts";
 const routes = Router();
 
-routes.get('/', (req, res) => {
-  res.render('index');
+routes.get("/", (req, res) => {
+  res.render("index");
 });
 
-routes.get('/download', (req, res) => {
-  res.render('download');
+routes.get("/download", (req, res) => {
+  res.render("download");
 });
 
-routes.get('/test', (req, res) => {
-  res.render('test');
+routes.get("/job/:jobId", (req, res) => {
+  const { jobId } = req.params;
+  const job = getJob(jobId);
+
+  if (!job) {
+    return res.status(404).send("Job not found");
+  }
+  res.render("job", { job });
 });
 
 export default routes;

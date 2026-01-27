@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itupy: download</title>
+    <meta name="description" content="Download YouTube videos in MP3 and MP4 format for free">
+    <%-include("./partials/head")-%>
+    <script src="/assets/scripts/job-download.js" defer></script>
+
+</head>
+
+<body class="bg-itp-light dark:bg-itp-dark min-h-screen transition-colors duration-200">
+
+    <div id="itpProgressBar" class="itp-progress-bar" style="width: 0%"></div>
+    <%-include("./partials/header")-%>
+
+
+        <main class="max-w-2xl mx-auto px-4 py-8 md:py-16">
+
+            <div id="loadingState" class="flex flex-col items-center justify-center text-center">
+
+                <div class="w-full max-w-md space-y-4">
+                    <h1 class="text-xl md:text-2xl font-semibold text-itp-gray-900 dark:text-white">
+                        Preparando seu download...
+                    </h1>
+
+                    <div class="flex items-center justify-center my-8">
+                        <div class="relative">
+                            <svg class="w-32 h-32 transform -rotate-90">
+                                <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="none"
+                                    class="text-itp-gray-200 dark:text-itp-gray-700" />
+                                <circle id="progressCircle" cx="64" cy="64" r="56" stroke="#FF0000" stroke-width="8"
+                                    fill="none" stroke-linecap="round" stroke-dasharray="351.86"
+                                    stroke-dashoffset="351.86" class="transition-all duration-300" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span id="progressPercent"
+                                    class="text-3xl font-bold text-itp-gray-900 dark:text-white">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p id="statusText" class="text-itp-gray-500 dark:text-itp-gray-400 text-sm">
+                        Conectando ao servidor...
+                    </p>
+
+                    <div class="w-full h-1.5 bg-itp-gray-200 dark:bg-itp-gray-700 rounded-full overflow-hidden">
+                        <div id="linearProgress" class="h-full bg-itp-red rounded-full transition-all duration-300"
+                            style="width: 0%"></div>
+                    </div>
+
+                    <div
+                        class="flex items-center justify-center gap-4 text-sm text-itp-gray-500 dark:text-itp-gray-400">
+                        <span id="fileFormat" class="flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            MP4
+                        </span>
+                        <span class="w-1 h-1 bg-itp-gray-400 rounded-full"></span>
+                        <span id="fileSize">~45 MB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="completedState" class="hidden flex-col items-center justify-center text-center">
+
+                <div class="mb-6 scale-up">
+                    <svg class="w-24 h-24 md:w-32 md:h-32" viewBox="0 0 52 52">
+                        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#22c55e"
+                            stroke-width="2" />
+                        <path class="checkmark-check" fill="none" stroke="#22c55e" stroke-width="3"
+                            stroke-linecap="round" stroke-linejoin="round" d="M14 27l7 7 16-16" />
+                    </svg>
+                </div>
+
+                <div class="space-y-3 mb-8 fade-in">
+                    <h1 class="text-2xl md:text-3xl font-semibold text-itp-gray-900 dark:text-white">
+                        Download Concluido!
+                    </h1>
+                    <p class="text-itp-gray-500 dark:text-itp-gray-400 max-w-sm">
+                        Seu video foi baixado automaticamente. Verifique a pasta de downloads do seu navegador.
+                    </p>
+                </div>
+
+                <div
+                    class="w-full max-w-md bg-itp-gray-50 dark:bg-itp-gray-800 rounded-xl p-4 mb-8 border border-itp-gray-200 dark:border-itp-gray-700 fade-in">
+                    <div class="flex gap-4">
+                        <div class="w-24 h-14 rounded-lg overflow-hidden shrink-0 bg-itp-gray-200 dark:bg-itp-gray-700">
+                            <img id="completedThumbnail" src="https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg"
+                                alt="Video thumbnail" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0 text-left">
+                            <h3 id="completedTitle"
+                                class="font-medium text-itp-gray-900 dark:text-white text-sm line-clamp-2 mb-1">
+                                Video Title Here
+                            </h3>
+                            <p class="text-xs text-itp-gray-500 dark:text-itp-gray-400">
+                                <span id="completedFormat">MP4</span> - <span id="completedSize">45 MB</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-md space-y-3 fade-in">
+
+                    <button 
+                        class="w-full py-3 px-6 bg-itp-gray-100 dark:bg-itp-gray-700 hover:bg-itp-gray-200 dark:hover:bg-itp-gray-600 text-itp-gray-900 dark:text-white font-medium rounded-full transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download nao iniciou? Clique aqui
+                    </button>
+
+                    <a href="/"
+                        class="w-full py-3 px-6 bg-itp-red hover:bg-red-600 text-white font-bold rounded-full transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Baixar mais videos
+                    </a>
+                </div>
+
+                <div class="w-full max-w-md my-8 flex items-center gap-4">
+                    <div class="flex-1 h-px bg-itp-gray-200 dark:bg-itp-gray-700"></div>
+                    <span class="text-xs text-itp-gray-400 dark:text-itp-gray-500 uppercase tracking-wider">Apoie o
+                        Itupy</span>
+                    <div class="flex-1 h-px bg-itp-gray-200 dark:bg-itp-gray-700"></div>
+                </div>
+
+                <div class="w-full max-w-md space-y-4 fade-in">
+                    <p class="text-sm text-itp-gray-500 dark:text-itp-gray-400 text-center">
+                        Ajude a manter o Itupy funcionando, gratuito e sem anuncios.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button
+                            class="py-3 px-4 bg-orange-600 text-white font-bold rounded-full transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Assistir Anuncio
+                        </button>
+
+                        <button
+                            class="py-3 px-4 bg-rose-500 text-white font-bold rounded-full transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            Fazer Doacao
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-itp-gray-400 dark:text-itp-gray-500 text-center mt-4">
+                        Obrigado por usar o Itupy!
+                    </p>
+                </div>
+            </div>
+
+        </main>
+
+        <%-include("./partials/footer")-%>
+</body>
+
+</html>

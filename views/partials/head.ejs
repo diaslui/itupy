@@ -1,0 +1,23 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>itupy: Baixe Videos do Youtube</title>
+<meta name="description"
+    content="Baixe videos do YouTube facilmente com itupy. Suporte para MP4 e MP3. Rápido, seguro e gratuito. Experimente agora!">
+
+<script>
+    (function () {
+        const savedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add("dark");
+        }
+    })();
+</script>
+
+<link rel="stylesheet" href="/assets/styles/output.css">
+<script src="/assets/scripts/global.js"></script>
+<script src="/assets/scripts/loader.js"></script>
+
+
+<script src="/assets/scripts/toast.js"></script>

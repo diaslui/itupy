@@ -261,7 +261,7 @@ const startDownload = async () => {
   showLoader("Redirecionando para a página de download...");
   showToast("Você será redirecionado para a página de download.");
 
-  redirect(`/download/job/${data.jobId}`);
+  redirect(`/job/${data.jobId}`);
 };
 
 const include1fListeners = async () => {
