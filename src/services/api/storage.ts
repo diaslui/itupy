@@ -1,7 +1,7 @@
 type Job = {
   id: string;
   urls: string[];
-  outputType: "music" | "video"; 
+  outputType: "audio" | "video"; 
   outputFormat: string;
   status: "idle" | "running" | "done" | "error";
   progress: number;
@@ -20,11 +20,11 @@ const getJob = (jobId: string) => {
     return jobs.get(jobId);
 }
 
-const updateJob = (jobId: string, progress: number, status: string) => {
-    const job = jobs.get(jobId);
-    if (job) {
-        job.progress = progress;
-        job.status = status as Job["status"];
+const updateJob = (job: Job) => {
+    const existingJob = jobs.get(job.id);
+    if (existingJob) {
+        jobs.set(job.id, job);
+        return job;
     } 
 };
 

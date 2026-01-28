@@ -56,10 +56,38 @@ const connectSSE = async (sseUrl) => {
   };
 };
 
+const downloadFile = async (jobId) => {
+  const response = await fetch("/api/download/stream/" + jobId);
+  if (!response.ok) {
+    console.error("Download failed:", response.statusText);
+    return;
+  }
+
+  const blob = await response.blob();
+  const contentDisposition = response.headers.get("Content-Disposition");
+  let filename = "downloaded_file";
+  if (contentDisposition) {
+    const match = contentDisposition.match(/filename="?(.+?)"?$/);
+    if (match) {
+      filename = match[1];
+    }
+  }
+
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+};
+
 const init = async () => {
   const thisJobId = window.location.pathname.split("/").pop();
   await loadElements();
   await connectSSE("/api/download/sse/" + thisJobId);
+  await downloadFile(thisJobId);
 };
 
 document.addEventListener("DOMContentLoaded", init);
