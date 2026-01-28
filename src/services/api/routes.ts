@@ -137,22 +137,8 @@ routes.get("/download/sse/:jobId", (req: Request, res: Response) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  //        res.write(`data: ${JSON.stringify({ progress: counter * 10, status: `Downloading... ${counter * 10}%` })}\n\n`);
 
-  req.on("message", (msg) => {
-    const data = JSON.parse(msg);
-    if (
-      !data ||
-      !data.type ||
-      !data.payload ||
-      data.type != "create-download"
-    ) {
-      res.end();
-      return;
-    }
-
-    console.log("Received message from client:", data);
-  });
+    //  res.write(`data: ${JSON.stringify({ progress: 100, status: "Downloading" })}\n\n`);
 
   req.on("close", () => {
     res.end();

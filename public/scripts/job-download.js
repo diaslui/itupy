@@ -6,6 +6,7 @@ const eRefs = {
 };
 
 const domRefs = {};
+let sseInstance = null;
 
 const loadElements = async () => {
   for (const [key, selector] of Object.entries(eRefs)) {
@@ -35,10 +36,30 @@ const updateProgress = (value) => {
   }
 };
 
+const connectSSE = async (sseUrl) => {
+    if (sseInstance) {
+    sseInstance.close();
+  }
+
+  sseInstance = new EventSource(sseUrl);
+
+  sseInstance.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.progress !== undefined) {
+      updateProgress(data.progress);
+    }
+  };
+
+  sseInstance.onerror = (error) => {
+    console.error("sses error:", error);
+    sseInstance.close();
+  };
+};
 
 const init = async () => {
+  const thisJobId = window.location.pathname.split("/").pop();
   await loadElements();
-  updateProgress(12);
+  await connectSSE("/api/download/sse/" + thisJobId);
 };
 
 document.addEventListener("DOMContentLoaded", init);
